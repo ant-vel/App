@@ -16,22 +16,8 @@ Route::resource('user/notices', 'NoticesController');
 
 
 Route::group(['prefix' => 'user', 'roles' => array_keys(trans('globals.roles')), 'middleware' => ['auth', 'roles']], function () {
-    Route::get('dashboard', 'UserController@dashBoard');
-
-    Route::get('/', 'UserController@profile');
-
-    Route::get('profile', 'UserController@profile');
-
-    Route::post('profile/save', 'UserController@saveProfile');
-
-    Route::post('profile/disable', 'UserController@disableProfile');
-
-    Route::post('profile/enable', 'UserController@activeProfile');
-
-    Route::post('upload', 'UserController@upload');
 
     //Store Cart
-
     Route::get('user/orders/updateQuantity/{orderId}/{orderDetailId}/{newValue}', ['uses' => 'OrdersController@updateQuantity', 'as' => 'orders.update_order_quantity']);
 
     Route::get('product/save/{product}', ['uses' => 'OrdersController@saveForLater', 'as' => 'orders.save_for_later']);

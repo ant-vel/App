@@ -65,15 +65,6 @@ class Product extends Model
         return $this->hasMany('App\Product', 'products_group', 'products_group');
     }
 
-    public static function create(array $attr = [])
-    {
-        if (isset($attr['features']) && is_array($attr['features'])) {
-            $attr['features'] = json_encode($attr['features']);
-        }
-
-        return parent::create($attr);
-    }
-
     public function getLastCommentsAttribute()
     {
         return $this->details->take(5);

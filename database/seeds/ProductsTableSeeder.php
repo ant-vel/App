@@ -54,6 +54,7 @@ class ProductsTableSeeder extends Seeder
                 'low_stock' => $faker->randomElement([5, 10, 15]),
                 'tags'      => json_encode($faker->word.','.$faker->word.','.$faker->word),
             ]);
+
             if ($faker->numberBetween(0, 1)) {
                 $percentage = $faker->randomElement([10, 15, 25, 35, 50]);
                 ProductOffer::create([

@@ -23,7 +23,7 @@ class CreateProductOffersTable extends Migration
             $table->integer('product_id')->unsigned();
             $table->dateTime('day_start');
             $table->dateTime('day_end');
-            $table->double('percentage', 2, 2);
+            $table->double('percentage', 10, 2);
             $table->double('price')->default(0);
             $table->integer('quantity')->default(0);
             $table->foreign('product_id')->references('id')->on('products');

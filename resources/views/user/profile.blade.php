@@ -16,7 +16,7 @@
 			<h5>{{ trans('user.user_account_settings') }}</h5>
 		</div>
 
-		<form class="form-horizontal" role="form" method="POST" action="{{ route('customer.update', ['customer' => $user]) }}">
+		<form class="form-horizontal" role="form" method="POST" action="{{ route('user.update', ['user' => $user]) }}">
 
 		{{ csrf_field() }}
 		{{ method_field('PUT') }}
@@ -24,7 +24,6 @@
 		<div ng-controller="ProfileController" ng-cloak>
 
 			<div ng-show="disabled" class="alert alert-danger" role="alert">
-				<p>{{ trans('user.disabled_at') }}: [[ disabled | date:'medium' ]]</p>
 				<small>{{ trans('user.account_disabled_description') }}</small>
 			</div>
 
@@ -75,30 +74,6 @@
 								<div class="row">
 									<div class="col-lg-12">
 										@include('user.partial.security_inputs')
-										<div ng-hide="disabled">
-											<label>{{ trans('user.disable_account') }}:</label>
-											<div class="panel panel-danger">
-												<div class="panel-body">
-												    <p class="text-warning">{{ trans('user.disable_account_description') }}</p>
-												    <button type="button" ng-click="wantDelete = true" class="btn btn-xs btn-danger">{{ trans('user.disable_account') }}</button>
-												    <div ng-show="wantDelete">
-												    	<strong>{{ trans('user.are_you_sure') }}?</strong>
-														<button type="button" class="btn btn-warning" ng-click="disableAccount()">{{ trans('globals.yes') }}</button>
-														<button type="button" class="btn btn-success" ng-click="wantDelete = false">{{ trans('globals.no') }}</button>
-												    </div>
-												</div>
-											</div>
-										</div>
-
-										<div ng-show="disabled">
-											<div class="panel panel-danger">
-												<label>{{ trans('user.enable_account') }}:</label>
-												<div class="panel-body">
-												    <p>{{ trans('user.enable_account_description') }}</p>
-												    <button type="button" ng-click="enableAccount()" class="btn btn-xs btn-primary">{{ trans('user.enable_account') }}</button>
-												</div>
-											</div>
-										</div>
 									</div>
 								</div>
 							</tab>
@@ -147,45 +122,36 @@
 				if (disabled !== '') $scope.disabled = new Date(disabled);
 
 				$scope.disableAccount = function(){
-					$http.post('/user/profile/disable').
+					$http.patch("{{ route('user.action', ['action' => 'disable']) }}").
 						success(function(data, status) {
 							if (data.success) {
-								$scope.disabled = new Date(data.date);
 								$scope.wantDelete = false;
-								notify({message:data.message,classes:'alert-danger'});
-							}else{
-								console.log(data); //mensajes de error en validacion de form
+								$scope.disabled = new Date(data.date);
+								notify({
+									messageTemplate: '<p>' + data.message + '</p>',
+									classes:'alert-danger'
+								});
 							}
 						}).
-						error(function(data, status, headers, config) {
-							notify({duration:2000,message:data.message,classes:'alert-error'});
+						error(function(data, status, headers, config) { console.log('sdsd');
+							notify({
+								messageTemplate: '<p>' + data.message + '</p>',
+								classes:'alert-error',
+								duration:2000
+							});
 						});
 				};
 
 				$scope.enableAccount = function(){
-					$http.post('/user/profile/enable').
+					$http.patch("{{ route('user.action', ['action' => 'enable']) }}").
 						success(function(data, status) {
 							if (data.success) {
 								$scope.wantDelete = false;
 								$scope.disabled = false;
-								notify({message:data.message,classes:'alert-success'});
-							}else{
-								console.log(data); //mensajes de error en validacion de form
-							}
-						}).
-						error(function(data, status, headers, config) {
-							notify({duration:2000,message:data.message,classes:'alert-error'});
-						});
-				};
-
-				$scope.checkDisable = function(){
-					$http.post('/user/profile/disable').
-						success(function(data, status) {
-							if (data.success) {
-								$scope.disabled = true;
-								notify({message:data.message,classes:'alert-success'});
-							}else{
-								console.log(data); //mensajes de error en validacion de form
+								notify({
+									messageTemplate: '<p>' + data.message + '</p>',
+									classes:'alert-success'
+								});
 							}
 						}).
 						error(function(data, status, headers, config) {
@@ -199,7 +165,6 @@
             	$scope.usingFlash = FileAPI && FileAPI.upload != null;
 				$scope.fileReaderSupported = window.FileReader != null && (window.FileAPI == null || FileAPI.html5 != false);
 				$scope.picture = '{{ $user->pic_url }}';
-				// console.log('pic: ', $scope.picture);
 
             	$scope.$watch('files', function () {
                     upload($scope.files);
@@ -211,31 +176,36 @@
                     if (files && files.length) {
                         for (var i = 0; i < files.length; i++) {
                             var file = files[i];
-                            var url='/user/upload';
+                            var url="{{ route('user.update', ['user' => $user]) }}";
                             $upload.upload({
                                 url: url,
-                                fields: {"_token":'{{ csrf_token() }}',"_method":"POST"},
+                                fields: {"referral":"upload", "_token":'{{ csrf_token() }}', "_method":"PATCH"},
                                 file: file
                             }).progress(function (evt) {
+
                                 var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
                                 $scope.progress= progressPercentage + '% ';
+
                             }).success(function (data, status, headers, config) {
 
-                                if(data.indexOf("Error:")> -1){
-
-                                    $scope.progress='';
-                                    notify({duration:4000,message:data,classes:'alert alert-danger'});
-
-                                }else{
+                            		$scope.progress= '';
+                                	notify({
+                                		duration:2000,
+                                		messageTemplate: "<p>{{ trans('responses.success') }}</p>",
+                                		classes:'alert alert-danger'
+                                	});
 									generateThumb(file);
-                                    $scope.file=data;
-                                    $scope.picture = data;
-                                    $timeout(function(){
-                                        $scope.progress= '';
-                                    }, 1000);
-                                }
 
-                            });
+                            }).error(function(data, status, headers, config) {
+
+                            	$scope.progress= '';
+								notify({
+                            		duration:4000,
+                            		messageTemplate: "<p>{{ trans('responses.errors.avatar') }}</p>",
+                            		classes:'alert alert-error'
+                            	});
+
+							});
                         }
                     }
                 }
@@ -249,8 +219,7 @@
 								fileReader.readAsDataURL(file);
 								fileReader.onload = function(e) {
 									$timeout(function() {
-										console.log(e.target.result);
-										file.dataUrl = e.target.result;
+										$scope.picture = file.dataUrl = e.target.result;
 									});
 								};
 							});

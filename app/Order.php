@@ -61,24 +61,24 @@ class Order extends Model
         return $this->belongsToMany('App\FreeProduct')->withTimestamps();
     }
 
-    public static function create(array $options = [])
-    {
-        //separate order details
-        $details = [];
-        if (isset($options['details'])) {
-            $details = $options['details'];
-        }
-        if (isset($options['detail'])) {
-            $details[] = $options['detail'];
-        }
-        unset($options['detail'], $options['details']);
-        $order = parent::create($options);
-        if (count($details)) {
-            $order->inDetail()->saveMany(OrderDetail::createModels($details));
-        }
+    // public static function create(array $options = [])
+    // {
+    //     //separate order details
+    //     $details = [];
+    //     if (isset($options['details'])) {
+    //         $details = $options['details'];
+    //     }
+    //     if (isset($options['detail'])) {
+    //         $details[] = $options['detail'];
+    //     }
+    //     unset($options['detail'], $options['details']);
+    //     $order = parent::create($options);
+    //     if (count($details)) {
+    //         $order->inDetail()->saveMany(OrderDetail::createModels($details));
+    //     }
 
-        return $order;
-    }
+    //     return $order;
+    // }
 
     public function save(array $options = [])
     {

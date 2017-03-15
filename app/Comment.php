@@ -8,6 +8,7 @@ namespace app;
  * @author  Gustavo Ocanto <gustavoocanto@gmail.com>
  */
 
+use App\Order;
 use App\ActionType;
 use App\Eloquent\Model;
 use App\Notice;

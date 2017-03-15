@@ -22,6 +22,7 @@ Route::get('register/confirm/{token}/{email}', [
 
 // home
 Route::get('/', ['as' => 'home', 'uses' => 'HomeController@index']);
+Route::get('dashboard', ['as' => 'home', 'uses' => 'HomeController@dashboard']); //while refactoring
 
 Route::group(['prefix' => 'home'], function () {
     Route::get('/', 'HomeController@index');

@@ -80,7 +80,7 @@ class ProductsRatesSeeder extends Seeder
         ]);
 
         for ($j = 0; $j < 5; $j++) {
-            Order::create([
+            $order = Order::create([
                 'user_id'     => $user->id,
                 'seller_id'   => '3',
                 'address_id'  => $userAddress->id,
@@ -89,14 +89,15 @@ class ProductsRatesSeeder extends Seeder
                 'description' => '',
                 'seller_id'   => 3,
                 'end_date'    => $faker->dateTime(),
-                'detail'      => [
-                    'product_id'    => $seededProduct->id,
-                    'price'         => $seededProduct->price,
-                    'quantity'      => '1',
-                    'delivery_date' => $faker->dateTime(),
-                    'rate'          => $faker->numberBetween(1, 5),
-                    'rate_comment'  => $faker->text(90),
-                ],
+            ]);
+
+            $order->details()->create([
+                'product_id'    => $seededProduct->id,
+                'price'         => $seededProduct->price,
+                'quantity'      => '1',
+                'delivery_date' => $faker->dateTime(),
+                'rate'          => $faker->numberBetween(1, 5),
+                'rate_comment'  => $faker->text(90),
             ]);
         }
 
@@ -172,7 +173,7 @@ class ProductsRatesSeeder extends Seeder
 
         // Creates closed orders for rates and mails
         for ($j = 0; $j < 5; $j++) {
-            Order::create([
+            $order = Order::create([
                 'user_id'     => $user->id,
                 'seller_id'   => '3',
                 'address_id'  => $userAddress->id,
@@ -181,31 +182,18 @@ class ProductsRatesSeeder extends Seeder
                 'description' => '',
                 'seller_id'   => 3,
                 'end_date'    => $faker->dateTime(),
-                'details'     => [
-                    [
-                        'product_id'    => $seededProduct->id,
-                        'price'         => $seededProduct->price,
-                        'quantity'      => '1',
-                        'delivery_date' => $faker->dateTime(),
-                    ],
-                    [
-                        'product_id'    => $seededProduct2->id,
-                        'price'         => $seededProduct2->price,
-                        'quantity'      => '1',
-                        'delivery_date' => $faker->dateTime(),
-                    ],
-                    [
-                        'product_id'    => $seededProduct3->id,
-                        'price'         => $seededProduct3->price,
-                        'quantity'      => '1',
-                        'delivery_date' => $faker->dateTime(),
-                    ],
-                ],
+            ]);
+
+            $order->details()->create([
+                'product_id'    => $seededProduct->id,
+                'price'         => $seededProduct->price,
+                'quantity'      => '1',
+                'delivery_date' => $faker->dateTime(),
             ]);
         }
 
         // Create an open order to test notices
-        Order::create([
+        $order = Order::create([
             'user_id'     => $user->id,
             'seller_id'   => '3',
             'status'      => 'open',
@@ -213,13 +201,12 @@ class ProductsRatesSeeder extends Seeder
             'description' => '',
             'seller_id'   => 3,
             'address_id'  => $userAddress->id,
-            'details'     => [
-                [
-                    'product_id' => $seededProduct->id,
-                    'price'      => $seededProduct->price,
-                    'quantity'   => '3',
-                ],
-            ],
+        ]);
+
+        $order->details()->create([
+            'product_id' => $seededProduct->id,
+            'price'      => $seededProduct->price,
+            'quantity'   => '3',
         ]);
     }
 }

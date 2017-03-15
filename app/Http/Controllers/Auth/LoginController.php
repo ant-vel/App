@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
+use Antvel\User\Auth\Sessions;
 use App\Http\Controllers\Controller;
-use Antvel\Components\Customer\Auth\Sessions;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
@@ -25,7 +25,7 @@ class LoginController extends Controller
     /**
      * The Antvel sessions driver.
      *
-     * @var Antvel\Components\Customer\Sessions
+     * @var Sessions
      */
     protected $antvel = null;
 

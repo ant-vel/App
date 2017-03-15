@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Antvel\User\Auth\Register;
 use App\Http\Controllers\Controller;
-use Antvel\Components\Customer\Auth\Register;
+use Antvel\User\Requests\RegisterRequest;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use Antvel\Components\Customer\Requests\RegisterRequest;
 
 class RegisterController extends Controller
 {

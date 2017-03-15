@@ -25,8 +25,8 @@ class Menu
     public static function dashboard($returnArray = false)
     {
         $menu = [
-            ['route' => '/user/dashboard', 'text' => trans('user.dashboard'), 'icon' => 'glyphicon glyphicon-dashboard'],
-            ['route' => '/customer', 'text' => trans('user.profile'), 'icon' => 'glyphicon glyphicon-user'],
+            ['route' => '/dashboard', 'text' => trans('user.dashboard'), 'icon' => 'glyphicon glyphicon-dashboard'],
+            ['route' => '/user/profile', 'text' => trans('user.profile'), 'icon' => 'glyphicon glyphicon-user'],
             ['route' => '/user/address', 'text' => trans('user.address_book'), 'icon' => 'glyphicon glyphicon-map-marker', 'divider' => 1],
         ];
         //Menu para empresas

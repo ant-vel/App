@@ -19,14 +19,9 @@ class OrdersTableSeeder extends Seeder
     {
         $faker = Faker::create();
 
-        $addresses = Address::get();
-
         $status_list = array_keys(trans('globals.order_status'));
 
-        $products = Product::select('id', 'price')->get();
-
         for ($i = 0; $i < 20; $i++) {
-            $address = $addresses->random(1);
             $type = $faker->randomElement(['cart', 'wishlist', 'order']);
             $status = 'open';
 
@@ -38,33 +33,22 @@ class OrdersTableSeeder extends Seeder
 
             $stock = $faker->numberBetween(1, 20);
 
+            $address = Address::inRandomOrder()->first();
+
             $order = Order::create([
                 'user_id'     => $address->user_id,
                 'seller_id'   => '3',
-                'address_id'  => $address->id, //address id
+                'address_id'  => $address->id,
                 'status'      => $status,
                 'type'        => $type,
                 'description' => $type == 'wishlist' ? $faker->companySuffix : '',
                 'end_date'    => $status == 'closed' || $status == 'cancelled' ? $faker->dateTime() : null,
             ]);
 
-            $num = $faker->numberBetween(2, 5);
+            $product = Product::inRandomOrder()->first();
+            $product_id = $product->id;
 
-            $list = [];
-            if ($num > 1 && (count($products) - 1) < $num) {
-                $num = count($products) - 1;
-            }
-
-            for ($j = 0; $j < $num; $j++) {
-                do {
-                    $a = true;
-                    $product = $products->random(1);
-                    if (in_array($product->id, $list)) {
-                        $a = false;
-                    } else {
-                        $list[] = $product->id;
-                    }
-                } while ($a == false);
+            for ($j = 0; $j < 5; $j++) {
 
                 if ($status == 'closed') {
                     $delivery = $faker->dateTime();
@@ -73,14 +57,15 @@ class OrdersTableSeeder extends Seeder
                 }
 
                 OrderDetail::create([
-                    'order_id'      => $order->id,
+                    'order_id'      => $order->first()->id,
                     'product_id'    => $product->id,
                     'price'         => $product->price,
-                    'quantity'      => $stock,
-                    'delivery_date' => $delivery,
+                    'quantity'      => 1,
+                    'delivery_date' => $faker->dateTime(),
                 ]);
+
+                $product = Product::where('id', '!=', $product_id)->inRandomOrder()->first();
             }
-            $order->sendNotice();
         }
     }
 }
