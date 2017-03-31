@@ -13,7 +13,7 @@ $class = is_array($class) ? implode('', $class) : $class;
  *
  * @var string / array
  */
-$m = Session::get('message');
+$m = Session::get('status') ?: Session::get('message');
 $m = $m ? (is_array($m) ? Html::ul($m) : '<p>'.$m.'</p>') : '';
 $m = $m ? (is_array($m) ? Html::ul($m) : '<p>'.$m.'</p>') : '';
 

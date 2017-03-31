@@ -47,7 +47,7 @@
 											</div>
 										</div>
 
-										<h5>{{ ucwords($user->fullName) }}</h5>
+										<h5>{{ ucwords($user->profile->fullName) }}</h5>
 
 									</div>
 								</div>
